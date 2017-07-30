@@ -6,30 +6,34 @@ SRCPATH = ./src
 HEADER := $(wildcard inc/*.h)
 SRC := $(wildcard src/*.c)
 OBJ := $(SRC:%.c=%.o)
-OBJ := $(filter-out src/piano.o, $(OBJ))
 
 CROSS = arm-none-linux-gnueabi-
 
 CC = $(CROSS)gcc
 
-CPPFLAGS += -Iinc
-#CPPFLAGS += -DDEBUG
+CPPFLAGS += -I ./inc
 
-LDFLAGS += -Llib
+LDFLAGS += -L ./lib
 LDFLAGS += -lcommon
 LDFLAGS += -lpthread
+
 LDFLAGS += -Wl,-rpath=./lib
-LDFLAGS += -Wl,-rpath=.
 
-all:piano
 
-piano:$(SRC) $(HEADER)
+
+debug:piano.c lib/libcommon.so
+	$(CC) $(SRC) $< -o $@ $(CPPFLAGS) $(LDFLAGS) -DDEBUG
+
+piano:piano.c lib/libcommon.so
+	$(CC) $(SRC) $< -o $@ $(CPPFLAGS) $(LDFLAGS) -DNDEBUG
+
+
+
+lib/libcommon.so:
 	$(MAKE) -C $(SRCPATH)
-	$(CC) $^ -o $@ $(CPPFLAGS) $(LDFLAGS)
-	$(MAKE) -C $(SRCPATH) clean
 
 clean:
-	$(RM) $(OBJ) piano .*.sw?
+	$(RM) $(OBJ) debug piano ./src/*.o
 
 distclean:clean
-	$(RM) ./lib/* ./src/*.o
+	$(RM) .*.sw? lib/libcommon.so

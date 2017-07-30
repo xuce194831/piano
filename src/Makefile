@@ -5,13 +5,14 @@ AR = $(CROSS)ar
 
 CFLAGS = -shared -fPIC
 
-CPPFLAGS := -I../inc
+CPPFLAGS := -I ../inc
 
-OBJ := bmp.o ts.o audio.o
+SRC := $(wildcard *.c)
+OBJ := $(patsubst %.c, %.o, $(SRC))
+
 
 libcommon.so:$(OBJ)
-	$(CC) $(CFLAGS) -o $@ $^
-	mv $@ ../lib
+	$(CC) $(CFLAGS) -o ../lib/$@ $^
 
 $(OBJ):%.o:%.c
 	$(CC) $< -o $@ $(CPPFLAGS) -c

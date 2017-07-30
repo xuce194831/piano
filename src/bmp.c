@@ -52,12 +52,6 @@ char * load_bmp(const char *bmpfile, struct image_info *minfo)
 	minfo->height= info.height;
 	minfo->pixel_size = info.bit_count/8;
 
-	#ifdef DEBUG
-	printf("width: %d\n", minfo->width);
-	printf("height: %d\n", minfo->height);
-	printf("pixel_size: %d\n", minfo->pixel_size);
-	#endif
-
 	close(fd);
 	return rgb_buf;
 }

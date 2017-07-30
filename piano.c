@@ -38,9 +38,10 @@ char * init_lcd(struct fb_var_screeninfo *vinfo)
 	bzero(vinfo, sizeof(struct fb_var_screeninfo));
 	ioctl(lcd, FBIOGET_VSCREENINFO, vinfo);
 
-	char *FB = mmap(NULL, vinfo->xres * vinfo->yres * 4,
-					PROT_READ|PROT_WRITE,
-					MAP_SHARED, lcd, 0);
+	int frm_size = vinfo->xres * vinfo->yres * vinfo->bits_per_pixel/8;
+
+	char *FB = mmap(NULL, frm_size, PROT_READ|PROT_WRITE, MAP_SHARED, lcd, 0);
+
 	return FB;
 }
 
@@ -74,10 +75,13 @@ int main(int argc, char **argv)
 
 	signal(SIGINT, catch_sig);
 
-	// 准备LCD
+	// 准备LCD, 获取LCD显存并保存当前画面
 	struct fb_var_screeninfo vinfo;
 	char *FB = init_lcd(&vinfo);
-	bzero(FB, vinfo.xres * vinfo.yres * vinfo.bits_per_pixel/8);
+
+	int frm_size = vinfo.xres * vinfo.yres * vinfo.bits_per_pixel/8;
+	char *reserve = calloc(1, frm_size);
+	memcpy(reserve, FB, frm_size);
 
 	// 显示背景
 	bmp2lcd(BACKGROUND, FB, &vinfo, 0, 0);
@@ -110,7 +114,23 @@ int main(int argc, char **argv)
 		bool released = false;
 		ts_trace(ts, &coor, &released);
 
+#ifdef DEBUG
 		printf("(%d,%d)\n", coor.x, coor.y);
+#endif
+		// 点击了退出按钮
+		if(coor.x > 700 && coor.x < 800 &&
+		   coor.y > 0   && coor.y < 47)
+		{
+			fprintf(stderr, "bye-bye!\n");
+			break;
+		}
+
+		// 点击在琴键之外区域
+		if(coor.x < 10 || coor.x > 790 ||
+		   coor.y < 47 || coor.y > 327)
+		{
+			continue;
+		}
 
 		if(released)
 		{
@@ -144,5 +164,10 @@ int main(int argc, char **argv)
 		}
 	}
 
-	return 0;
+	// 恢复程序执行之前的系统界面，并释放相应资源
+	memcpy(FB, reserve, frm_size);
+	munmap(FB, frm_size);
+	close(ts);
+
+	pthread_exit(NULL);
 }
