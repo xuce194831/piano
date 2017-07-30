@@ -2,7 +2,7 @@
 //
 //  Copyright(C), 2013-2016, GEC Tech. Co., Ltd.
 //
-//  File name: GPLE/audio.h
+//  File name: piano/src/audio.h
 //
 //  Author: Vincent Lin (林世霖)  微信公众号：秘籍酷
 //

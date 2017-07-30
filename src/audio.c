@@ -1,3 +1,19 @@
+//////////////////////////////////////////////////////////////////
+//
+//  Copyright(C), 2013-2016, GEC Tech. Co., Ltd.
+//
+//  File name: piano/src/audio.c
+//
+//  Author: Vincent Lin (林世霖)  微信公众号：秘籍酷
+//
+//  Date: 2016-11
+//  
+//  Description: 播放MP3线程
+//
+//  GitHub: github.com/vincent040   Bug Report: 2437231462@qq.com
+//
+//////////////////////////////////////////////////////////////////
+
 #include "audio.h"
 
 int vol = 0;
