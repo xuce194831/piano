@@ -1,0 +1,7 @@
+debug
+piano
+.*.sw?
+
+src/*.o
+lib/lib*.so*
+lib/lib*.a
