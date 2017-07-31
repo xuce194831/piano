@@ -75,6 +75,9 @@ int main(int argc, char **argv)
 
 	signal(SIGINT, catch_sig);
 
+	// 检查并配置ALSA库相关音频设备节点文件
+	system("./bin/snd.sh");
+
 	// 准备LCD, 获取LCD显存并保存当前画面
 	struct fb_var_screeninfo vinfo;
 	char *FB = init_lcd(&vinfo);
@@ -115,7 +118,7 @@ int main(int argc, char **argv)
 		ts_trace(ts, &coor, &released);
 
 #ifdef DEBUG
-		printf("(%d,%d)\n", coor.x, coor.y);
+		fprintf(stderr, "\r(%d, %d)   ", coor.x, coor.y);
 #endif
 		// 点击了退出按钮
 		if(coor.x > 700 && coor.x < 800 &&

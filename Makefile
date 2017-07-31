@@ -21,10 +21,10 @@ LDFLAGS += -Wl,-rpath=./lib
 
 
 
-debug:piano.c lib/libcommon.so
+debug:piano.c lib/libcommon.so $(SRC) $(HEADER)
 	$(CC) $(SRC) $< -o $@ $(CPPFLAGS) $(LDFLAGS) -DDEBUG
 
-piano:piano.c lib/libcommon.so
+piano:piano.c lib/libcommon.so $(SRC) $(HEADER)
 	$(CC) $(SRC) $< -o $@ $(CPPFLAGS) $(LDFLAGS) -DNDEBUG
 
 
