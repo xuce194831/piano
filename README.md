@@ -10,3 +10,9 @@ an application played on ARM-A53-based platform
 2 按下琴键发出相应的琴音
 
 3 手指可连续划屏，发出连续琴音
+
+
+
+
+
+欢迎加入QQ群一起讨论技术：<a href="//shang.qq.com/wpa/qunwpa?idkey=bc2c3338276a40ac72131230ad041a00c60a2fe45172ab6b9a93fea44cf0e6fa">![image](https://github.com/vincent040/lab/blob/master/res/QQ_qun.png?raw=true)
