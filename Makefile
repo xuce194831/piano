@@ -21,11 +21,11 @@ LDFLAGS += -Wl,-rpath=./lib
 
 
 
-debug:piano.c lib/libcommon.so $(SRC) $(HEADER)
-	$(CC) $(SRC) $< -o $@ $(CPPFLAGS) $(LDFLAGS) -DDEBUG
-
-piano:piano.c lib/libcommon.so $(SRC) $(HEADER)
+piano.out:piano.c lib/libcommon.so $(SRC) $(HEADER)
 	$(CC) $(SRC) $< -o $@ $(CPPFLAGS) $(LDFLAGS) -DNDEBUG
+
+debug.out:piano.c lib/libcommon.so $(SRC) $(HEADER)
+	$(CC) $(SRC) $< -o $@ $(CPPFLAGS) $(LDFLAGS) -DDEBUG
 
 
 
@@ -33,7 +33,7 @@ lib/libcommon.so:
 	$(MAKE) -C $(SRCPATH)
 
 clean:
-	$(RM) $(OBJ) debug piano ./src/*.o
+	$(RM) $(OBJ) *.out ./src/*.o
 
 distclean:clean
 	$(RM) .*.sw? lib/libcommon.so
