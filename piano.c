@@ -12,9 +12,9 @@
 //
 //  程序调用接口：
 //  ./piano 音量值[0-3] 0: 关闭音量
-//                      1：小音量
-//                      2：默认音量
-//                      3：大音量
+//                      1：默认音量
+//                      2：大音量
+//                      3：超大音量
 //
 //  GitHub: github.com/vincent040   Bug Report: 2437231462@qq.com
 //
@@ -59,18 +59,18 @@ int main(int argc, char **argv)
 		switch(atoi(argv[1]))	
 		{
 		case 0:
-			vol =-175;break;
+			vol =-175; break;
 		case 1:
-			vol = -15; break;
+			vol = -15; break; // 这是默认的音量
 		case 2:
-			vol = 0; break; // 这是默认的音量
+			vol = 0;   break;
 		case 3:
-			vol = 10;break;
+			vol = 10;  break;
 		}
 	}
 	else
 	{
-		vol = 0;
+		vol = -15;
 	}
 
 	signal(SIGINT, catch_sig);
