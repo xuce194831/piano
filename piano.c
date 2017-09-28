@@ -26,8 +26,13 @@
 #include <signal.h>
 #include <pthread.h>
 
+char *FB = NULL;
+char *reserve = NULL;
+int  frm_size = 0;
+
 void catch_sig(int sig)
 {
+	memcpy(FB, reserve, frm_size);
 	exit(0);
 }
 
@@ -40,7 +45,14 @@ char * init_lcd(struct fb_var_screeninfo *vinfo)
 
 	int frm_size = vinfo->xres * vinfo->yres * vinfo->bits_per_pixel/8;
 
-	char *FB = mmap(NULL, frm_size, PROT_READ|PROT_WRITE, MAP_SHARED, lcd, 0);
+	char *FB = mmap(NULL, frm_size,
+			PROT_READ|PROT_WRITE,
+			MAP_SHARED, lcd, 0);
+	if(FB == MAP_FAILED)
+	{
+		perror("mmap LCD failed");
+		exit(0);
+	}
 
 	return FB;
 }
@@ -48,6 +60,26 @@ char * init_lcd(struct fb_var_screeninfo *vinfo)
 void usage(const char *prog)
 {
 	printf("Usage: %s volume[0-3]\n", prog);
+}
+
+
+// 点击了在琴键之外区域
+bool out_of_range(struct coordinate *coor)
+{
+	if(coor->x < 10 || coor->x > 790 ||
+	   coor->y < 47 || coor->y > 327)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+// 点击了“关闭”按钮退出游戏
+bool exit_the_game(struct coordinate *coor)
+{
+	return (coor->x > 700 && coor->x < 800 &&
+		coor->y > 0   && coor->y < 47);
 }
 
 int main(int argc, char **argv)
@@ -80,10 +112,10 @@ int main(int argc, char **argv)
 
 	// 准备LCD, 获取LCD显存并保存当前画面
 	struct fb_var_screeninfo vinfo;
-	char *FB = init_lcd(&vinfo);
+	FB = init_lcd(&vinfo);
 
-	int frm_size = vinfo.xres * vinfo.yres * vinfo.bits_per_pixel/8;
-	char *reserve = calloc(1, frm_size);
+	frm_size = vinfo.xres * vinfo.yres * vinfo.bits_per_pixel/8;
+	reserve = calloc(1, frm_size);
 	memcpy(reserve, FB, frm_size);
 
 	// 显示背景
@@ -120,22 +152,17 @@ int main(int argc, char **argv)
 #ifdef DEBUG
 		fprintf(stderr, "\r(%d, %d)   ", coor.x, coor.y);
 #endif
-		// 点击了退出按钮
-		if(coor.x > 700 && coor.x < 800 &&
-		   coor.y > 0   && coor.y < 47)
+
+		// 点击了退出按钮或按了ctrl+c强制退出
+		if(exit_the_game(&coor))
 		{
 			fprintf(stderr, "bye-bye!\n");
 			break;
 		}
 
-		// 点击在琴键之外区域
-		if(coor.x < 10 || coor.x > 790 ||
-		   coor.y < 47 || coor.y > 327)
-		{
-			continue;
-		}
-
-		if(released)
+		// 松手了，或者手指滑动到琴键之外
+		// 则将琴键恢复弹起状态
+		if(released || out_of_range(&coor))
 		{
 			for(i=0; i<12; i++)
 			{
@@ -144,9 +171,6 @@ int main(int argc, char **argv)
 			first_time = true;
 			continue;
 		}
-
-		if(coor.x > 790 || coor.x < 10)
-			continue;
 
 		new_pos = 10 + (coor.x-10)/65*65;
 
