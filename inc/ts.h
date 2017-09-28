@@ -31,7 +31,11 @@
 #include <sys/mman.h>
 #include <pthread.h>
 
+#ifdef GEC6818
 #define TOUCH_PANEL "/dev/input/event0"
+#elif  GEC210
+#define TOUCH_PANEL "/dev/event0"
+#endif
 
 struct coordinate
 {

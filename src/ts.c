@@ -16,7 +16,7 @@
 
 #include "ts.h"
 
-
+// 获取一对坐标，并且让手指松开的时候也能获取其状态
 void ts_trace(int ts, struct coordinate *coor, bool *released)
 {
 	struct input_event buf;
@@ -29,10 +29,15 @@ void ts_trace(int ts, struct coordinate *coor, bool *released)
 		bzero(&buf, sizeof(buf));
 		read(ts, &buf, sizeof(buf));
 
-		// have released the touch-panel
+#ifdef GEC6818
 		if(buf.type == EV_KEY &&
 		   buf.code == BTN_TOUCH &&
 		   buf.value == 0)
+#elif GEC210
+		if(buf.type == EV_ABS &&
+		   buf.code == ABS_PRESSURE &&
+		   buf.value == 0)
+#endif
 		{
 			*released = true;
 			break;

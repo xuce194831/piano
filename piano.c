@@ -153,7 +153,7 @@ int main(int argc, char **argv)
 		fprintf(stderr, "\r(%d, %d)   ", coor.x, coor.y);
 #endif
 
-		// 点击了退出按钮或按了ctrl+c强制退出
+		// 点击了退出按钮
 		if(exit_the_game(&coor))
 		{
 			fprintf(stderr, "bye-bye!\n");

@@ -12,6 +12,7 @@ CROSS = arm-none-linux-gnueabi-
 CC = $(CROSS)gcc
 
 CPPFLAGS += -I ./inc
+CPPFLAGS += -DGEC6818
 
 LDFLAGS += -L ./lib
 LDFLAGS += -lcommon
