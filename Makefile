@@ -12,7 +12,9 @@ CROSS = arm-none-linux-gnueabi-
 CC = $(CROSS)gcc
 
 CPPFLAGS += -I ./inc
-CPPFLAGS += -DGEC6818
+
+#BOARD += -DGEC210
+BOARD += -DGEC6818
 
 LDFLAGS += -L ./lib
 LDFLAGS += -lcommon
@@ -23,10 +25,10 @@ LDFLAGS += -Wl,-rpath=./lib
 
 
 piano.elf:piano.c lib/libcommon.so $(SRC) $(HEADER)
-	$(CC) $(SRC) $< -o $@ $(CPPFLAGS) $(LDFLAGS) -DNDEBUG
+	$(CC) $(SRC) $< -o $@ $(CPPFLAGS) $(LDFLAGS) $(BOARD) -DNDEBUG
 
 debug.elf:piano.c lib/libcommon.so $(SRC) $(HEADER)
-	$(CC) $(SRC) $< -o $@ $(CPPFLAGS) $(LDFLAGS) -DDEBUG
+	$(CC) $(SRC) $< -o $@ $(CPPFLAGS) $(LDFLAGS) $(BOARD) -DDEBUG
 
 
 
