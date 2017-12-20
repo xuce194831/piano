@@ -21,6 +21,7 @@
 #include <string.h>
 #include <strings.h>
 #include <stdio.h>
+#include <pthread.h>
 
 #define MAD_PLAYER "./bin/madplay"
 #define NOTES_PATH "./res/notes"
