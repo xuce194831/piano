@@ -29,7 +29,7 @@ void catch_sig(int sig)
 	exit(0);
 }
 
-char * init_lcd(struct fb_var_screeninfo *vinfo)
+char *init_lcd(struct fb_var_screeninfo *vinfo)
 {
 	int lcd = open(LCD, O_RDWR);
 
